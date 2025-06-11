@@ -14,8 +14,17 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class StudentFragment extends Fragment {
+    /*************************설계*********************************************/
+    //DB 객체 저장을 위한 멤버필드 추가
 
-    // TODO: Rename parameter arguments, choose names that match
+     //학생 목록 출력을 위한 ListView 멤버 필드 추가
+
+     //질의 결과 저장을 위한 cursor 멤버필드 추가
+
+     //ListView를 위한 adapter 멤버필드 추가
+
+     /**************************************************************************/
+     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -64,5 +73,12 @@ public class StudentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_student, container, false);
+
+        //StudentFragment의 레이아웃을 팽창하여 뷰를 생성
+        //학생 목록 출력을 위한 Listview를 인식하여 studListView 멤버필드에 저장
+        //검색 SQL문을 작성하고 이 검색문을 실행하고 결과를 cursor에 저장
+        //cursor를 이용하여 SimpleCursorAdapter를 생성하고 이를 studListView의  adapter로 설정
+        //studListView에 컨텍스트 메뉴를 등록 : 삭제/수정 기능 구현 – registerForContextMenu()
+
     }
 }
