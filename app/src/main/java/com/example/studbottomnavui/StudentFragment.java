@@ -1,12 +1,21 @@
 package com.example.studbottomnavui;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,13 +25,13 @@ import android.view.ViewGroup;
 public class StudentFragment extends Fragment {
     /*************************설계*********************************************/
     //DB 객체 저장을 위한 멤버필드 추가
-
+    SQLiteDatabase sqLiteDatabase;
      //학생 목록 출력을 위한 ListView 멤버 필드 추가
-
+    ListView listView;
      //질의 결과 저장을 위한 cursor 멤버필드 추가
-
+     Cursor cursor;
      //ListView를 위한 adapter 멤버필드 추가
-
+    SimpleCursorAdapter adapter;
      /**************************************************************************/
      // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,6 +44,10 @@ public class StudentFragment extends Fragment {
 
     public StudentFragment() {
         // Required empty public constructor
+    }
+
+    public StudentFragment(SQLiteDatabase db) {
+        sqLiteDatabase = db;
     }
 
     /**
@@ -72,13 +85,46 @@ public class StudentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student, container, false);
-
         //StudentFragment의 레이아웃을 팽창하여 뷰를 생성
-        //학생 목록 출력을 위한 Listview를 인식하여 studListView 멤버필드에 저장
-        //검색 SQL문을 작성하고 이 검색문을 실행하고 결과를 cursor에 저장
-        //cursor를 이용하여 SimpleCursorAdapter를 생성하고 이를 studListView의  adapter로 설정
-        //studListView에 컨텍스트 메뉴를 등록 : 삭제/수정 기능 구현 – registerForContextMenu()
+        String[] from = {"SNO", "SNAME", "YEAR", "DEPT"};
+        int[] to = {R.id.tvSno, R.id.tvName, R.id.tvYear, R.id.tvDept};
 
+        View view = inflater.inflate(R.layout.fragment_student, container, false);
+
+
+        //학생 목록 출력을 위한 Listview를 인식하여 studListView 멤버필드에 저장
+        listView = view.findViewById(R.id.studListView);
+        //검색 SQL문을 작성하고 이 검색문을 실행하고 결과를 cursor에 저장
+        String sqlStatement = "SELECT * FROM STUDENT";
+        cursor = sqLiteDatabase.rawQuery(sqlStatement, null);
+        //cursor를 이용하여 SimpleCursorAdapter를 생성하고 이를 studListView의  adapter로 설정
+        adapter = new SimpleCursorAdapter(getContext(), R.layout.list_item, cursor, from, to, 0);
+        listView.setAdapter(adapter);
+        //studListView에 컨텍스트 메뉴를 등록 : 삭제/수정 기능 구현 – registerForContextMenu()
+        registerForContextMenu(listView);
+        return view;
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = new MenuInflater(v.getContext());
+        inflater.inflate(R.menu.contextmenu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int menuId = item.getItemId();
+        return super.onContextItemSelected(item);
     }
 }
+
+
+
+
+
+
+
+
+
+
